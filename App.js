@@ -3,24 +3,13 @@ import React, { useState } from "react";
 import * as Font from 'expo-font';
 import { Text, Image } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
-import { Asset } from 'expo-asset';
+import { Asset, useAssets } from 'expo-asset';
 
 export default function App() {
-  const [ready, setReady] = useState(false);
-  const onFinish = () => setReady(true);
-  const startLoading = async () => {
-    await Font.loadAsync(Ionicons.font);
-    // await Asset.loadAsync(require(""));
-    await Image.prefetch("https://reactnative.dev/img/oss_logo.png");
-  };
-  if (!ready) {
-    return (
-      <AppLoading
-        startAsync={startLoading} // optional
-        onFinish={onFinish}
-        onError={console.error}
-      />
-    );
+  const [assets] = useAssets([require('./casa.jpg')]);
+  const [loaded] = Font.useFonts(Ionicons.font); // useFonts는 fonts 로드 여부에 따라 T or F를 준다.
+  if (!assets || !loaded) {
+    return <AppLoading />;
   }
   return <Text>We are done loading!</Text>;
 }
