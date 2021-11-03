@@ -5,6 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Asset, useAssets } from 'expo-asset';
 import { NavigationContainer } from '@react-navigation/native'; // DarkTheme, DefaultTheme 커스텀 안한 다크, 라이트 모드 사용 가능
 import Tabs from "./navigation/Tabs";
+import Stack from "./navigation/Stack";
 
 
 export default function App() {
@@ -15,5 +16,8 @@ export default function App() {
     return <AppLoading />;
   }
   // return <NavigationContainer theme={isDark ? DarkTheme : DefaultTheme}><Tabs /></NavigationContainer>
-  return <NavigationContainer><Tabs /></NavigationContainer>
+  return (
+    <NavigationContainer>
+      <Stack />
+    </NavigationContainer>)
 }
