@@ -18,26 +18,7 @@ const Tabs = () => {
   const isDark = useColorScheme() === "dark";
 
   return (
-    <Tab.Navigator
-      screenOptions={{
-        tabBarStyle: {
-          backgroundColor: isDark ? IMPERIAL_PRIMER : LIGHT_BLUE_BALERINA,
-        },
-        tabBarActiveTintColor: isDark ? DOUBLE_ORAGON_SKIN : IMPERIAL_PRIMER,
-        tabBarInactiveTintColor: isDark ? LIGHT_BLUE_BALERINA : STORM_PETREL,
-        headerStyle: {
-          backgroundColor: isDark ? IMPERIAL_PRIMER : LIGHT_BLUE_BALERINA,
-        },
-        headerTitleStyle: {
-          color: isDark ? DOUBLE_ORAGON_SKIN : IMPERIAL_PRIMER,
-        },
-        tabBarLabelStyle: {
-          marginTop: -5,
-          fontSize: 12,
-          fontWeight: "600",
-        },
-      }}
-    >
+    <Tab.Navigator>
       <Tab.Screen
         name="Movies"
         component={Movie}
