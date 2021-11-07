@@ -1,6 +1,10 @@
-import React from 'react';
-import { View, Text } from 'react-native';
+import React from "react";
+import { TouchableOpacity, Text } from "react-native";
 
-const Movie = () => (<View><Text>Movie</Text></View>);
+const Movie = ({ navigation: { navigate } }) => (
+  <TouchableOpacity onPress={() => navigate("Stack", { screen: "Three" })}>
+    <Text>Movie</Text>
+  </TouchableOpacity>
+);
 
 export default Movie;

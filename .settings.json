@@ -5,9 +5,8 @@
     "editor.codeActionsOnSave": {
         "source.fixAll.eslint": true,
     },
-    "javascript.format.enable": false,
+    "javascript.format.enable": true,
     "prettier.eslintIntegration": true,
-    "prettier.disableLanguages": ["js"],
     "eslint.alwaysShowStatus": true,
     "files.autoSave": "onFocusChange"
 }
