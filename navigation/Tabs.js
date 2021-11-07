@@ -18,7 +18,11 @@ const Tabs = () => {
   const isDark = useColorScheme() === "dark";
 
   return (
-    <Tab.Navigator>
+    <Tab.Navigator
+      sceneContainerStyle={{
+        backgroundColor: isDark ? IMPERIAL_PRIMER : "white",
+      }}
+    >
       <Tab.Screen
         name="Movies"
         component={Movie}
