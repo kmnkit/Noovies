@@ -4,6 +4,7 @@ import { BlurView } from "expo-blur";
 import { makeImgPath } from "../utils";
 import { StyleSheet, useColorScheme } from "react-native";
 import Poster from "./Poster";
+import Votes from "./Votes";
 
 const View = styled.View`
   flex: 1;
@@ -32,9 +33,7 @@ const Overview = styled.Text`
   margin-top: 10px;
   color: rgba(255, 255, 255, 0.6);
 `;
-const Votes = styled(Overview)`
-  font-size: 12px;
-`;
+
 const Slide = ({
   backdropPath,
   posterPath,
@@ -58,7 +57,7 @@ const Slide = ({
           <Poster path={posterPath} />
           <Column>
             <Title>{originalTitle}</Title>
-            {voteAverage > 0 ? <Votes>⭐️{voteAverage}/10</Votes> : null}
+            <Votes voteAverage={voteAverage} />
             <Overview>{overview.slice(0, 80)}...</Overview>
           </Column>
         </Wrapper>
