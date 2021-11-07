@@ -1,8 +1,10 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Text, View, TouchableOpacity } from "react-native";
+import { Text, TouchableOpacity } from "react-native";
 import { DOUBLE_ORAGON_SKIN } from "../colors";
 
+// 일반 Stack은 Javascript로 이루어져 Customizing이 쉽지만 Native Stack에 비해 느릴 수 있다.
+// Native Stack은 Native API가 사용되기에 Customizing의 여지가 별로 없다.
 const ScreenOne = ({ navigation: { navigate } }) => (
   <TouchableOpacity onPress={() => navigate("Two")}>
     <Text>One</Text>

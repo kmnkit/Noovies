@@ -11,7 +11,6 @@ import {
   STORM_PETREL,
 } from "../colors";
 import { Ionicons } from "@expo/vector-icons";
-import Stack from "./Stack";
 
 const Tab = createBottomTabNavigator();
 
