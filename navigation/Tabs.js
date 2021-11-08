@@ -4,12 +4,7 @@ import Movie from "../screens/Movie";
 import Tv from "../screens/Tv";
 import Search from "../screens/Search";
 import { useColorScheme } from "react-native";
-import {
-  DOUBLE_ORAGON_SKIN,
-  IMPERIAL_PRIMER,
-  LIGHT_BLUE_BALERINA,
-  STORM_PETREL,
-} from "../colors";
+import { IMPERIAL_PRIMER } from "../colors";
 import { Ionicons } from "@expo/vector-icons";
 
 const Tab = createBottomTabNavigator();
@@ -22,6 +17,7 @@ const Tabs = () => {
       sceneContainerStyle={{
         backgroundColor: isDark ? IMPERIAL_PRIMER : "white",
       }}
+      screenOptions={{ unmountOnBlur: true }}
     >
       <Tab.Screen
         name="Movies"
