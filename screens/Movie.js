@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, Dimensions, ScrollView } from "react-native";
+import {
+  ActivityIndicator,
+  Dimensions,
+  RefreshControl,
+  ScrollView,
+} from "react-native";
 import styled from "styled-components/native";
 import Swiper from "react-native-swiper";
 import Slide from "../components/Slide";
-import Poster from "../components/Poster";
-import Votes from "../components/Votes";
+import HMedia from "../components/HMedia";
+import VMedia from "../components/VMedia";
 
 const API_KEY = "0eaa6db7e6ac99943d7b4b24e95ec968";
 
@@ -22,42 +27,8 @@ const ListTitle = styled.Text`
   margin-left: 30px;
 `;
 
-const MovieContainer = styled.View`
-  margin-right: 20px;
-`;
-
-const Title = styled.Text`
-  color: white;
-  font-weight: 600;
-  margin-top: 7px;
-  margin-bottom: 5px;
-`;
-
-const HMovie = styled.View`
-  padding: 0px 30px;
-  margin-bottom: 30px;
-  flex-direction: row;
-`;
-
-const HColumn = styled.View`
-  margin-left: 15px;
-  width: 80%;
-`;
-
-const Overview = styled.Text`
-  color: rgba(255, 255, 255, 0.6);
-  width: 80%;
-  font-size: 13px;
-`;
-
 const ListContainer = styled.View`
   margin-bottom: 40px;
-`;
-
-const Release = styled.Text`
-  color: white;
-  font-size: 12px;
-  margin-vertical: 10px;
 `;
 
 const ComingSoonTitle = styled(ListTitle)`
@@ -67,6 +38,7 @@ const ComingSoonTitle = styled(ListTitle)`
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 const Movie = () => {
+  const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
   const [nowPlaying, setNowPlaying] = useState([]);
   const [upcoming, setUpcoming] = useState([]);
@@ -104,12 +76,22 @@ const Movie = () => {
     getData();
   }, []);
 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await getData();
+    setRefreshing(false);
+  };
+
   return loading ? (
     <Loader>
       <ActivityIndicator />
     </Loader>
   ) : (
-    <Container>
+    <Container
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
       <Swiper
         horizontal
         loop
@@ -141,41 +123,24 @@ const Movie = () => {
           showsHorizontalScrollIndicator={false}
         >
           {trending.map((movie) => (
-            <MovieContainer key={movie.id}>
-              <Poster path={movie.poster_path} />
-              <Title>
-                {movie.original_title.slice(0, 11)}
-                {movie.original_title.length > 11 ? "..." : null}
-              </Title>
-              <Votes voteAverage={movie.vote_average} />
-            </MovieContainer>
+            <VMedia
+              key={movie.id}
+              posterPath={movie.poster_path}
+              originalTitle={movie.original_title}
+              voteAverage={movie.vote_average}
+            />
           ))}
         </ScrollView>
       </ListContainer>
       <ComingSoonTitle>Coming Soon</ComingSoonTitle>
       {upcoming.map((movie) => (
-        <HMovie key={movie.id}>
-          <Poster path={movie.poster_path} />
-          <HColumn>
-            <Title>
-              {movie.original_title.slice(0, 11)}
-              {movie.original_title.length > 11 ? "..." : null}
-            </Title>
-            <Votes voteAverage={movie.vote_average} />
-            <Release>
-              {new Date(movie.release_date).toLocaleDateString("ko", {
-                month: "long",
-                day: "numeric",
-                year: "numeric",
-              })}
-            </Release>
-            <Overview>
-              {movie.overview !== "" && movie.overview.length > 85
-                ? `${movie.overview.slice(0, 85)}...`
-                : movie.overview}
-            </Overview>
-          </HColumn>
-        </HMovie>
+        <HMedia key={movie.id}
+          posterPath={movie.poster_path}
+          originalTitle={movie.original_title}
+          overview={movie.overview}
+          releaseDate={movie.release_date}
+          voteAverage={movie.vote_average}
+        />
       ))}
     </Container>
   );
