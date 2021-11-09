@@ -55,6 +55,7 @@ const Movie = () => {
       overview={item.overview}
       releaseDate={item.release_date}
       voteAverage={item.vote_average}
+      fullData={item}
     />
   );
   const movieKeyExtractor = (item) => item.id;
@@ -89,6 +90,7 @@ const Movie = () => {
                 originalTitle={movie.original_title}
                 voteAverage={movie.vote_average}
                 overview={movie.overview}
+                fullData={movie}
               />
             ))}
           </Swiper>

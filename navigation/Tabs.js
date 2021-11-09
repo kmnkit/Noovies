@@ -17,7 +17,15 @@ const Tabs = () => {
       sceneContainerStyle={{
         backgroundColor: isDark ? IMPERIAL_PRIMER : "white",
       }}
-      screenOptions={{ unmountOnBlur: true }}
+      screenOptions={{
+        unmountOnBlur: true,
+        headerStyle: {
+          backgroundColor: isDark ? IMPERIAL_PRIMER : "white",
+        },
+        headerTitleStyle: {
+          color: isDark ? "white" : IMPERIAL_PRIMER,
+        },
+      }}
     >
       <Tab.Screen
         name="Movies"
