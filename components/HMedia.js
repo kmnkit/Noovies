@@ -1,4 +1,6 @@
+import { useNavigation } from "@react-navigation/native";
 import React from "react";
+import { TouchableWithoutFeedback } from "react-native";
 import styled from "styled-components/native";
 import Poster from "./Poster";
 import Votes from "./Votes";
@@ -38,29 +40,35 @@ const HMedia = ({
   releaseDate,
   voteAverage,
 }) => {
+  const navigation = useNavigation();
+  const goToDetail = () => {
+    navigation.navigate("Stack", { screen: "Detail" });
+  };
   return (
-    <HMovie>
-      <Poster path={posterPath} />
-      <HColumn>
-        <Title>
-          {originalTitle.slice(0, 11)}
-          {originalTitle.length > 11 ? "..." : null}
-        </Title>
-        <Votes voteAverage={voteAverage} />
-        <Release>
-          {new Date(releaseDate).toLocaleDateString("ko", {
-            month: "long",
-            day: "numeric",
-            year: "numeric",
-          })}
-        </Release>
-        <Overview>
-          {overview !== "" && overview.length > 85
-            ? `${overview.slice(0, 85)}...`
-            : overview}
-        </Overview>
-      </HColumn>
-    </HMovie>
+    <TouchableWithoutFeedback onPress={goToDetail}>
+      <HMovie>
+        <Poster path={posterPath} />
+        <HColumn>
+          <Title>
+            {originalTitle.slice(0, 11)}
+            {originalTitle.length > 11 ? "..." : null}
+          </Title>
+          <Votes voteAverage={voteAverage} />
+          <Release>
+            {new Date(releaseDate).toLocaleDateString("ko", {
+              month: "long",
+              day: "numeric",
+              year: "numeric",
+            })}
+          </Release>
+          <Overview>
+            {overview !== "" && overview.length > 85
+              ? `${overview.slice(0, 85)}...`
+              : overview}
+          </Overview>
+        </HColumn>
+      </HMovie>
+    </TouchableWithoutFeedback>
   );
 };
 

@@ -16,9 +16,9 @@ export const moviesApi = {
     ).then((res) => res.json()),
   search: ({ queryKey }) => {
     const [_, query] = queryKey;
-    fetch(
+    return fetch(
       `${BASE_URL}/search/movie?api_key=${API_KEY}&language=ko-KR&query=${query}&page=1`
-    );
+    ).then((res) => res.json());
   },
 };
 
@@ -37,8 +37,8 @@ export const tvApi = {
     ).then((res) => res.json()),
   search: ({ queryKey }) => {
     const [_, query] = queryKey;
-    fetch(
+    return fetch(
       `${BASE_URL}/search/tv?api_key=${API_KEY}&language=ko-KR&query=${query}&page=1`
-    );
+    ).then((res) => res.json());
   },
 };

@@ -15,13 +15,3 @@ const Root = () => (
 );
 
 export default Root;
-
-// 이 위에서 일어난 일 정리
-// Root {
-//     Tabs{
-//         Movies -> navigate(Stack, {screen: One})
-//     }
-//     Stack{
-//         One -> navigate(Tabs, {screen: Search})
-//     }
-// }
