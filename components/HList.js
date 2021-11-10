@@ -2,6 +2,7 @@ import React from "react";
 import { FlatList } from "react-native";
 import styled from "styled-components";
 import VMedia from "./VMedia";
+import { loadMore } from "../utils";
 
 const ListContainer = styled.View`
   margin-bottom: 40px;
@@ -19,11 +20,12 @@ export const HListSeparator = styled.View`
   width: 20px;
 `;
 
-const HList = ({ title, data }) => {
+const HList = ({ title, data, hasNextPage, fetchNextPage }) => {
   return (
     <ListContainer>
       <ListTitle>{title}</ListTitle>
       <FlatList
+        onEndReached={() => loadMore(hasNextPage, fetchNextPage)}
         data={data}
         horizontal
         contentContainerStyle={{ paddingHorizontal: 20 }}

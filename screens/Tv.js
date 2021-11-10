@@ -1,26 +1,39 @@
 import React, { useState } from "react";
 import { RefreshControl } from "react-native";
 import { ScrollView } from "react-native";
-import { useQuery, useQueryClient } from "react-query";
+import { useInfiniteQuery, useQuery, useQueryClient } from "react-query";
 import { tvApi } from "../api";
 import HList from "../components/HList";
 import Loader from "../components/Loader";
+import { getNextPage } from "../utils";
 
 const Tv = () => {
   const queryClient = useQueryClient();
   const [refreshing, setRefreshing] = useState(false);
-  const { isLoading: todayLoading, data: todayData } = useQuery(
-    ["tv", "today"],
-    tvApi.airing
-  );
-  const { isLoading: topLoading, data: topData } = useQuery(
-    ["tv", "top"],
-    tvApi.topRated
-  );
-  const { isLoading: trendingLoading, data: trendingData } = useQuery(
-    ["tv", "trending"],
-    tvApi.trending
-  );
+  const {
+    isLoading: todayLoading,
+    data: todayData,
+    hasNextPage: todayHasNextPage,
+    fetchNextPage: todayFetchNextPage,
+  } = useInfiniteQuery(["tv", "today"], tvApi.airing, {
+    getNextPageParam: getNextPage,
+  });
+  const {
+    isLoading: topLoading,
+    data: topData,
+    hasNextPage: topHasNextPage,
+    fetchNextPage: topFetchNextPage,
+  } = useInfiniteQuery(["tv", "top"], tvApi.topRated, {
+    getNextPageParam: getNextPage,
+  });
+  const {
+    isLoading: trendingLoading,
+    data: trendingData,
+    hasNextPage: trendingHasNextPage,
+    fetchNextPage: trendingFetchNextPage,
+  } = useInfiniteQuery(["tv", "trending"], tvApi.trending, {
+    getNextPageParam: getNextPage,
+  });
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -39,9 +52,24 @@ const Tv = () => {
       }
       contentContainerStyle={{ paddingVertical: 30 }}
     >
-      <HList title="Trending TV" data={trendingData.results} />
-      <HList title="Airing Today TV" data={todayData.results} />
-      <HList title="Top Rated TV" data={topData.results} />
+      <HList
+        hasNextPage={trendingHasNextPage}
+        fetchNextPage={trendingFetchNextPage}
+        title="Trending TV"
+        data={trendingData.pages.map((page) => page.results).flat()}
+      />
+      <HList
+        hasNextPage={todayHasNextPage}
+        fetchNextPage={todayFetchNextPage}
+        title="Airing Today TV"
+        data={todayData.pages.map((page) => page.results).flat()}
+      />
+      <HList
+        hasNextPage={topHasNextPage}
+        fetchNextPage={topFetchNextPage}
+        title="Top Rated TV"
+        data={topData.pages.map((page) => page.results).flat()}
+      />
     </ScrollView>
   );
 };

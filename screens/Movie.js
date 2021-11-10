@@ -1,11 +1,5 @@
 import React, { useState } from "react";
-import {
-  Alert,
-  Dimensions,
-  FlatList,
-  RefreshControl,
-  View,
-} from "react-native";
+import { Dimensions, FlatList, View } from "react-native";
 import styled from "styled-components/native";
 import Swiper from "react-native-swiper";
 import Slide from "../components/Slide";
@@ -14,6 +8,7 @@ import { useInfiniteQuery, useQuery, useQueryClient } from "react-query";
 import { moviesApi } from "../api";
 import Loader from "../components/Loader";
 import HList from "../components/HList";
+import { getNextPage, loadMore } from "../utils";
 
 const ListTitle = styled.Text`
   color: white;
@@ -35,56 +30,43 @@ const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 const Movie = () => {
   const [refreshing, setRefreshing] = useState(false);
   const queryClient = useQueryClient();
+
   const { isLoading: nowPlayingLoading, data: nowPlayingData } = useQuery(
     ["movies", "nowPlaying"],
     moviesApi.nowPlaying
   );
 
   const {
-    isLoading: upcomingLoading,
-    data: upcomingData,
-    hasNextPage,
-    fetchNextPage,
-  } = useInfiniteQuery(["movies", "upComing"], moviesApi.upcoming, {
-    getNextPageParam: (currentPage) => {
-      const nextPage = currentPage.page + 1;
-      return nextPage > currentPage.total_pages ? null : nextPage;
-    },
+    isLoading: trendingLoading,
+    data: trendingData,
+    hasNextPage: trendingHasNextPage,
+    fetchNextPage: trendingFetchNextPage,
+  } = useInfiniteQuery(["movies", "trending"], moviesApi.trending, {
+    getNextPageParam: getNextPage,
   });
 
-  const { isLoading: trendingLoading, data: trendingData } = useQuery(
-    ["movies", "trending"],
-    moviesApi.trending
-  );
+  const {
+    isLoading: upcomingLoading,
+    data: upcomingData,
+    hasNextPage: upcomingHasNextPage,
+    fetchNextPage: upcomingFetchNextPage,
+  } = useInfiniteQuery(["movies", "upComing"], moviesApi.upcoming, {
+    getNextPageParam: getNextPage,
+  });
 
   const onRefresh = () => {
     setRefreshing(true);
     queryClient.refetchQueries(["movies"]);
     setRefreshing(false);
   };
-
-  const renderHMedia = ({ item }) => (
-    <HMedia
-      posterPath={item.poster_path}
-      originalTitle={item.original_title}
-      overview={item.overview}
-      releaseDate={item.release_date}
-      voteAverage={item.vote_average}
-      fullData={item}
-    />
-  );
   const movieKeyExtractor = (item) => item.id;
   const loading = nowPlayingLoading || upcomingLoading || trendingLoading;
-  const loadMore = () => {
-    if (hasNextPage) {
-      fetchNextPage();
-    }
-  };
+
   return loading ? (
     <Loader />
   ) : (
     <FlatList
-      onEndReached={loadMore}
+      onEndReached={() => loadMore(upcomingHasNextPage, upcomingFetchNextPage)}
       onRefresh={onRefresh}
       refreshing={refreshing}
       ListHeaderComponent={
@@ -114,7 +96,12 @@ const Movie = () => {
             ))}
           </Swiper>
           {trendingData ? (
-            <HList title="Trending Movies" data={trendingData.results} />
+            <HList
+              hasNextPage={trendingHasNextPage}
+              fetchNextPage={trendingFetchNextPage}
+              title="Trending Movies"
+              data={trendingData.pages.map((page) => page.results).flat()}
+            />
           ) : null}
           <ComingSoonTitle>Coming Soon</ComingSoonTitle>
         </>
@@ -123,7 +110,16 @@ const Movie = () => {
       keyExtractor={movieKeyExtractor}
       ItemSeparatorComponent={() => <View style={{ height: 20 }} />}
       ItemSeparatorComponent={HSeparator}
-      renderItem={renderHMedia}
+      renderItem={({ item }) => (
+        <HMedia
+          posterPath={item.poster_path}
+          originalTitle={item.original_title}
+          overview={item.overview}
+          releaseDate={item.release_date}
+          voteAverage={item.vote_average}
+          fullData={item}
+        />
+      )}
     ></FlatList>
   );
 };
