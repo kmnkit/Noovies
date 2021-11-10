@@ -1,5 +1,11 @@
 import React, { useEffect } from "react";
-import { Dimensions, StyleSheet, Linking } from "react-native";
+import {
+  Dimensions,
+  StyleSheet,
+  Share,
+  TouchableOpacity,
+  Platform,
+} from "react-native";
 import styled from "styled-components";
 import Poster from "../components/Poster";
 import { makeImgPath } from "../utils";
@@ -62,16 +68,53 @@ const BtnText = styled.Text`
 `;
 const Detail = ({ navigation: { setOptions }, route: { params } }) => {
   const isMovie = "original_title" in params;
-
   const { isLoading, data } = useQuery(
     [isMovie ? "movies" : "tv", params.id],
     isMovie ? moviesApi.detail : tvApi.detail
+  );
+
+  const shareMedia = async () => {
+    const isAndroid = Platform.OS === "android";
+    const homepage = isMovie
+      ? `https://www.imdb.com/title/${data.imdb_id}/`
+      : data.homepage;
+    if (isAndroid) {
+      await Share.share({
+        url: homepage,
+        title:
+          "original_title" in params
+            ? params.original_title
+            : params.original_name,
+      });
+    } else {
+      await Share.share({
+        url: isMovie
+          ? `https://www.imdb.com/title/${data.imdb_id}/`
+          : data.homepage,
+        title:
+          "original_title" in params
+            ? params.original_title
+            : params.original_name,
+      });
+    }
+  };
+  const ShareButton = () => (
+    <TouchableOpacity onPress={shareMedia}>
+      <Ionicons name="share-outline" color="white" size={24} />
+    </TouchableOpacity>
   );
   useEffect(() => {
     setOptions({
       title: isMovie ? "Movie" : "TV Show",
     });
   }, []);
+  useEffect(() => {
+    if (data) {
+      setOptions({
+        headerRight: () => <ShareButton />,
+      });
+    }
+  }, [data]);
   const openYTLink = async (videoId) => {
     const baseUrl = `http://m.youtube.com/watch?v=${videoId}`;
     // await Linking.openURL(baseUrl);
